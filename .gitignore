@@ -1,0 +1,23 @@
+# Build output
+build/
+
+# macOS
+.DS_Store
+
+# Claude Code
+.claude/
+
+# Xcode (if added later)
+*.xcodeproj/xcuserdata/
+*.xcworkspace/xcuserdata/
+DerivedData/
+*.xccheckout
+*.moved-aside
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Swift Package Manager
+.build/
+.swiftpm/
