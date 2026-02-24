@@ -2,7 +2,7 @@
 set -e
 
 # Configuration
-APP_NAME="KCRWPlayer"
+APP_NAME="PublicRadioPlayer"
 BUILD_DIR="build"
 APP_BUNDLE="$BUILD_DIR/$APP_NAME.app"
 CONTENTS_DIR="$APP_BUNDLE/Contents"
@@ -23,7 +23,7 @@ swiftc \
     -framework AVFoundation \
     -framework AVKit \
     -framework SwiftUI \
-    KCRWPlayer/*.swift
+    PublicRadioPlayer/*.swift
 
 # Create Info.plist
 cat > "$CONTENTS_DIR/Info.plist" << 'EOF'
@@ -32,11 +32,11 @@ cat > "$CONTENTS_DIR/Info.plist" << 'EOF'
 <plist version="1.0">
 <dict>
     <key>CFBundleExecutable</key>
-    <string>KCRWPlayer</string>
+    <string>PublicRadioPlayer</string>
     <key>CFBundleIdentifier</key>
-    <string>com.local.kcrwplayer</string>
+    <string>com.local.publicradioplayer</string>
     <key>CFBundleName</key>
-    <string>KCRW Player</string>
+    <string>Public Radio Player</string>
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleShortVersionString</key>

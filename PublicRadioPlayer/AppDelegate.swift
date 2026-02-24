@@ -24,7 +24,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     private func setupPopover() {
         popover = NSPopover()
-        popover.contentSize = NSSize(width: 220, height: 200)
+        popover.contentSize = NSSize(width: 220, height: 320)
         popover.behavior = .transient
         popover.contentViewController = NSHostingController(
             rootView: MenuContentView(
@@ -37,7 +37,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private func updateStatusIcon() {
         if let button = statusItem.button {
             let iconName = audioPlayer.isPlaying ? "speaker.wave.2.fill" : "radio"
-            button.image = NSImage(systemSymbolName: iconName, accessibilityDescription: "KCRW Player")
+            button.image = NSImage(systemSymbolName: iconName, accessibilityDescription: "Public Radio Player")
         }
     }
 
@@ -58,10 +58,10 @@ struct MenuContentView: View {
     var onIconUpdate: () -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: 8) {
             // Header
             HStack {
-                Text("KCRW")
+                Text("Public Radio")
                     .font(.headline)
                 Spacer()
                 AirPlayButton()
@@ -70,20 +70,27 @@ struct MenuContentView: View {
 
             Divider()
 
-            // Stream selector
-            ForEach(KCRWStream.allCases) { stream in
-                Button(action: {
-                    audioPlayer.switchStream(stream)
-                    onIconUpdate()
-                }) {
-                    HStack {
-                        Image(systemName: audioPlayer.currentStream == stream ? "checkmark.circle.fill" : "circle")
-                            .foregroundColor(audioPlayer.currentStream == stream ? .accentColor : .secondary)
-                        Text(stream.displayName)
-                        Spacer()
+            // Stations and streams
+            ForEach(Station.allCases) { station in
+                Text(station.rawValue)
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                    .padding(.top, 2)
+
+                ForEach(station.streams) { stream in
+                    Button(action: {
+                        audioPlayer.switchStream(stream)
+                        onIconUpdate()
+                    }) {
+                        HStack {
+                            Image(systemName: audioPlayer.currentStream == stream ? "checkmark.circle.fill" : "circle")
+                                .foregroundColor(audioPlayer.currentStream == stream ? .accentColor : .secondary)
+                            Text(stream.name)
+                            Spacer()
+                        }
                     }
+                    .buttonStyle(.plain)
                 }
-                .buttonStyle(.plain)
             }
 
             Divider()
