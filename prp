@@ -1,0 +1,76 @@
+#!/bin/bash
+# prp — command-line control for the Public Radio Player menu bar app.
+set -e
+
+BASE="http://127.0.0.1:7997"
+
+die() { echo "$1" >&2; exit 1; }
+
+# GET a control endpoint; fail clearly if the app isn't running.
+req() {
+    curl -sf "$@" 2>/dev/null || die "Public Radio Player isn't running (start it from /Applications)."
+}
+
+fmt_status() {
+    python3 -c '
+import sys, json
+s = json.load(sys.stdin)
+state = "playing" if s["playing"] else "paused"
+stream = s["stream"]
+station = s["station"]
+where = f"{station} / {stream}" if station else stream
+print(f"{state}: {where}")
+'
+}
+
+fmt_channels() {
+    python3 -c '
+import sys, json
+data = json.load(sys.stdin)
+for st in data["stations"]:
+    print(st["station"])
+    for s in st["streams"]:
+        print("  " + s["name"])
+'
+}
+
+cmd="${1:-status}"
+shift || true
+
+case "$cmd" in
+    status)
+        req "$BASE/status" | fmt_status
+        ;;
+    list|channels)
+        req "$BASE/channels" | fmt_channels
+        ;;
+    play)
+        req "$BASE/play" | fmt_status
+        ;;
+    pause)
+        req "$BASE/pause" | fmt_status
+        ;;
+    toggle)
+        req "$BASE/toggle" | fmt_status
+        ;;
+    switch)
+        [ -n "$1" ] || die "Usage: prp switch <channel name>   (see: prp list)"
+        req -G "$BASE/switch" --data-urlencode "stream=$*" | fmt_status
+        ;;
+    -h|--help|help)
+        cat <<'EOF'
+prp — control the Public Radio Player menu bar app
+
+Usage:
+  prp status              Show play state and current channel
+  prp list                List stations and channels
+  prp play                Start playback
+  prp pause               Pause playback
+  prp toggle              Toggle play/pause
+  prp switch <channel>    Switch to a channel by name (e.g. prp switch "Radio 4")
+EOF
+        ;;
+    *)
+        die "Unknown command: $cmd  (try: prp help)"
+        ;;
+esac

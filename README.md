@@ -5,14 +5,17 @@ A minimal macOS menu bar app for streaming public radio to AirPlay speakers, iso
 Please consider supporting these stations:
 - **KCRW** - Music discovery, NPR and local news, culture coverage, and community events: https://join.kcrw.com/
 - **WNYC** - Award-winning journalism, groundbreaking podcasts, and essential New York conversation: https://pledge.wnyc.org/
+- **Radio France** - Public service radio from France, including FIP: https://www.radiofrance.fr/
+- **BBC** - UK public broadcasting, including Radio 4: https://www.bbc.co.uk/sounds
 
 ## Features
 
 - **Menu bar only** - No dock icon, doesn't interfere with other apps
-- **Two stations** - KCRW (Los Angeles) and WNYC (New York City)
-- **Six streams** - KCRW 89.9, Eclectic24, News24, WNYC FM 93.9, WNYC AM 820, New Sounds
+- **Four stations** - KCRW (Los Angeles), WNYC (New York City), Radio France, and BBC
+- **Eight streams** - KCRW 89.9, Eclectic24, News24, WNYC FM 93.9, WNYC AM 820, New Sounds, FIP, Radio 4
 - **Native AirPlay picker** - Route audio to any AirPlay speaker
 - **Isolated audio** - Plays on selected AirPlay device while other apps use your default output
+- **CLI control** - Drive the player from the terminal with `prp` (list, status, play, pause, switch)
 
 ## Requirements
 
@@ -50,6 +53,27 @@ To launch at login, add it via System Settings > General > Login Items.
 3. Click **Play**
 4. Click the **AirPlay button** (top right) to choose your speaker
 
+## CLI
+
+The app runs a small control server on `127.0.0.1:7997` (localhost only). The `prp`
+script in this repo is a thin client for it — symlink it onto your `PATH`:
+
+```bash
+ln -sf "$PWD/prp" /opt/homebrew/bin/prp
+```
+
+```bash
+prp status              # play state + current channel
+prp list                # all stations and channels
+prp play                # start playback
+prp pause               # pause
+prp toggle              # toggle play/pause
+prp switch <channel>    # e.g. prp switch "Radio 4"
+prp help                # usage
+```
+
+The menu bar app must be running for the CLI to work.
+
 ## Stream URLs
 
 ### KCRW (Los Angeles)
@@ -68,15 +92,33 @@ To launch at login, add it via System Settings > General > Login Items.
 | WNYC AM 820 | `https://am820.wnyc.org/wnycam` |
 | New Sounds | `https://q2stream.wqxr.org/q2` |
 
+### Radio France
+
+| Stream | URL |
+|--------|-----|
+| FIP | `https://icecast.radiofrance.fr/fip-midfi.mp3` |
+
+### BBC
+
+| Stream | URL |
+|--------|-----|
+| Radio 4 | resolved at launch via [radio-browser](https://www.radio-browser.info) |
+
+BBC rotates the CDN pool numbers in its stream URLs, so Radio 4 is resolved
+dynamically at launch (by radio-browser station UUID). The hardcoded URL in the
+source is only a fallback.
+
 ## Project Structure
 
 ```
 public-radio-player/
 ├── PublicRadioPlayer/
-│   ├── main.swift          # App entry point
-│   ├── AppDelegate.swift   # Menu bar UI, AirPlay picker
-│   └── AudioPlayer.swift   # AVPlayer wrapper, station/stream model
-├── build.sh                # Build script
+│   ├── main.swift            # App entry point
+│   ├── AppDelegate.swift     # Menu bar UI, AirPlay picker
+│   ├── AudioPlayer.swift     # AVPlayer wrapper, station/stream model
+│   └── ControlServer.swift   # Localhost HTTP server for the CLI
+├── prp                       # CLI client for the control server
+├── build.sh                  # Build script
 └── README.md
 ```
 
