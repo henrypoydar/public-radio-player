@@ -17,6 +17,9 @@ Please consider supporting these stations:
 - **Isolated audio** - Plays on selected AirPlay device while other apps use your default output
 - **CLI control** - Drive the player from the terminal with `prp` (list, status, play, pause, switch)
 
+
+|<img width="222" height="516" alt="preview" src="https://github.com/user-attachments/assets/c62d0d9e-c3e5-4736-a979-cec5d7a16b24" />|<img width="346" height="246" alt="preview-output" src="https://github.com/user-attachments/assets/7bd3b8aa-ace8-40e8-9e93-677b29ac93f3" />|
+
 ## Requirements
 
 - macOS 13.0 or later
@@ -73,6 +76,8 @@ prp help                # usage
 ```
 
 The menu bar app must be running for the CLI to work.
+
+https://github.com/user-attachments/assets/99be6591-1132-45af-bbc5-e4a58c012828
 
 ## Stream URLs
 
