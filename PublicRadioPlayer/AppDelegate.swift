@@ -10,7 +10,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private lazy var controlServer = ControlServer(player: audioPlayer)
     private var cancellables = Set<AnyCancellable>()
 
+    // Keep AirPlay discovery active for the app's lifetime so idle receivers
+    // (e.g. "Studio") stay listed in the route picker instead of aging out.
+    private let routeDetector = AVRouteDetector()
+
     func applicationDidFinishLaunching(_ notification: Notification) {
+        routeDetector.isRouteDetectionEnabled = true
         setupStatusItem()
         setupPopover()
         controlServer.start()

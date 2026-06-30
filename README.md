@@ -4,6 +4,8 @@ A minimal macOS menu bar app for streaming public radio to AirPlay speakers, iso
 
 |<img width="222" height="516" alt="preview" src="https://github.com/user-attachments/assets/c62d0d9e-c3e5-4736-a979-cec5d7a16b24" />|<img width="346" height="246" alt="preview-output" src="https://github.com/user-attachments/assets/7bd3b8aa-ace8-40e8-9e93-677b29ac93f3" />|
 
+This is an unofficial, independent player and is not affiliated with or endorsed by any of the stations below. It only plays their public streams; all audio content remains the property of the respective broadcasters.
+
 Please consider supporting these stations:
 - **KCRW** - Music discovery, NPR and local news, culture coverage, and community events: https://join.kcrw.com/
 - **WNYC** - Award-winning journalism, groundbreaking podcasts, and essential New York conversation: https://pledge.wnyc.org/
@@ -106,11 +108,14 @@ https://github.com/user-attachments/assets/99be6591-1132-45af-bbc5-e4a58c012828
 
 | Stream | URL |
 |--------|-----|
-| Radio 4 | resolved at launch via [radio-browser](https://www.radio-browser.info) |
+| World Service | `https://a.files.bbci.co.uk/ms6/live/3441A116-B12E-4D2F-ACA8-C1984642FA4B/audio/simulcast/hls/nonuk/pc_hd_abr_v2/aks/bbc_world_service.m3u8` |
+| Radio 6 Music | resolved at launch via [radio-browser](https://www.radio-browser.info) |
 
-BBC rotates the CDN pool numbers in its stream URLs, so Radio 4 is resolved
-dynamically at launch (by radio-browser station UUID). The hardcoded URL in the
-source is only a fallback.
+BBC rotates the CDN pool numbers in its stream URLs. World Service points at
+BBC's `ms6` media-selector master playlist, which rotates the pool internally,
+so it stays current on its own. 6 Music has no non-UK master, so its direct pool
+URL is refreshed at launch by radio-browser station UUID (the hardcoded URL in
+the source is only a fallback).
 
 ## Project Structure
 
@@ -139,3 +144,9 @@ Ensure your AirPlay speakers are on the same network. The picker uses macOS's na
 
 **No audio:**
 Click the AirPlay button and verify a device is selected. Check System Settings > Sound to confirm the app isn't muted.
+
+## License
+
+Released under the [MIT License](LICENSE). The license covers this application's
+source code only — not the audio streams, which remain the property of the
+respective broadcasters.

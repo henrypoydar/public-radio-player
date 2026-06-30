@@ -40,7 +40,12 @@ enum Station: String, CaseIterable, Identifiable {
             ]
         case .bbc:
             return [
-                RadioStream(name: "World Service", url: "https://a.files.bbci.co.uk/media/live/manifesto/audio/simulcast/hls/nonuk/sbr_low/ak/bbc_world_service.m3u8", resolverUUID: "14b6c684-bb7c-4926-b2a3-fd5a02bf7867"),
+                // World Service uses BBC's ms6 media-selector master, which rotates the
+                // CDN pool internally — so it self-refreshes and needs no resolver. (The
+                // legacy "manifesto" URL that radio-browser still returns is dead.)
+                RadioStream(name: "World Service", url: "https://a.files.bbci.co.uk/ms6/live/3441A116-B12E-4D2F-ACA8-C1984642FA4B/audio/simulcast/hls/nonuk/pc_hd_abr_v2/aks/bbc_world_service.m3u8"),
+                // 6 Music has no non-UK ms6 master, so it's a direct pool URL kept current
+                // at launch via radio-browser.
                 RadioStream(name: "Radio 6 Music", url: "https://as-hls-ww-live.akamaized.net/pool_81827798/live/ww/bbc_6music/bbc_6music.isml/bbc_6music-audio=320000.norewind.m3u8", resolverUUID: "1c6dcd6f-88c6-4fd4-8191-078435168e85"),
             ]
         }
