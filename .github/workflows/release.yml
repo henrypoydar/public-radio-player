@@ -1,0 +1,37 @@
+name: Release
+
+# Publish a downloadable build whenever a version tag is pushed, e.g.:
+#   git tag v1.0.0 && git push origin v1.0.0
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build universal app
+        run: ./build.sh
+
+      - name: Zip the app bundle
+        run: |
+          ditto -c -k --sequesterRsrc --keepParent \
+            build/PublicRadioPlayer.app PublicRadioPlayer.zip
+
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: PublicRadioPlayer.zip
+          body: |
+            ## Install
+
+            1. Download **PublicRadioPlayer.zip** below and unzip it.
+            2. Drag **PublicRadioPlayer.app** into your **Applications** folder.
+            3. The app is unsigned, so the first launch needs one extra step —
+               see the [install instructions](https://github.com/${{ github.repository }}#install-download).

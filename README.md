@@ -26,13 +26,35 @@ Please consider supporting these stations:
 - macOS 13.0 or later
 - Xcode Command Line Tools (`xcode-select --install`)
 
+## Install (download)
+
+The easiest way — no developer tools needed:
+
+1. Go to the [Releases](../../releases) page and download **PublicRadioPlayer.zip** from the latest release.
+2. Unzip it and drag **PublicRadioPlayer.app** into your **Applications** folder.
+3. Because the app isn't signed by a paid Apple developer account, macOS blocks
+   it on first launch. To get past this **once**:
+   - Double-click the app. macOS will say it "cannot be opened."
+   - Open **System Settings → Privacy & Security**, scroll down, and click
+     **Open Anyway** next to the PublicRadioPlayer message.
+   - Confirm with **Open**. After this, it launches normally every time.
+
+   If you're comfortable in Terminal, you can skip the dialogs with one command:
+
+   ```bash
+   xattr -dr com.apple.quarantine /Applications/PublicRadioPlayer.app
+   ```
+
+To launch at login, add it via System Settings → General → Login Items.
+
 ## Build
 
 ```bash
 ./build.sh
 ```
 
-This compiles the Swift source and creates `build/PublicRadioPlayer.app`.
+This compiles the Swift source into a universal (Apple Silicon + Intel)
+`build/PublicRadioPlayer.app`.
 
 ## Run
 
@@ -40,15 +62,13 @@ This compiles the Swift source and creates `build/PublicRadioPlayer.app`.
 open build/PublicRadioPlayer.app
 ```
 
-## Install
+## Install (from source)
 
-Copy to Applications for permanent installation:
+Copy your local build to Applications for permanent installation:
 
 ```bash
 cp -r build/PublicRadioPlayer.app /Applications/
 ```
-
-To launch at login, add it via System Settings > General > Login Items.
 
 ## Usage
 
@@ -103,19 +123,21 @@ https://github.com/user-attachments/assets/99be6591-1132-45af-bbc5-e4a58c012828
 | Stream | URL |
 |--------|-----|
 | FIP | `https://icecast.radiofrance.fr/fip-midfi.mp3` |
+| RFI | `https://rfimonde64k.ice.infomaniak.ch/rfimonde-64.mp3` |
 
 ### BBC
 
 | Stream | URL |
 |--------|-----|
-| World Service | `https://a.files.bbci.co.uk/ms6/live/3441A116-B12E-4D2F-ACA8-C1984642FA4B/audio/simulcast/hls/nonuk/pc_hd_abr_v2/aks/bbc_world_service.m3u8` |
+| World Service | resolved at launch via [BBC media-selector](https://open.live.bbc.co.uk/mediaselector/6/select/version/2.0/mediaset/pc/vpid/bbc_world_service/format/json) |
 | Radio 6 Music | resolved at launch via [radio-browser](https://www.radio-browser.info) |
 
-BBC rotates the CDN pool numbers in its stream URLs. World Service points at
-BBC's `ms6` media-selector master playlist, which rotates the pool internally,
-so it stays current on its own. 6 Music has no non-UK master, so its direct pool
-URL is refreshed at launch by radio-browser station UUID (the hardcoded URL in
-the source is only a fallback).
+BBC rotates the CDN pool numbers in its stream URLs. World Service is resolved
+from BBC's media-selector — the same API BBC Sounds uses — which always returns
+the current HLS URL, tracking pool, CDN, and profile changes. 6 Music has no
+non-UK media-selector entry, so its direct pool URL is refreshed at launch by
+radio-browser station UUID instead. In both cases the hardcoded URL in the
+source is only a fallback.
 
 ## Project Structure
 

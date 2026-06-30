@@ -13,17 +13,27 @@ RESOURCES_DIR="$CONTENTS_DIR/Resources"
 rm -rf "$BUILD_DIR"
 mkdir -p "$MACOS_DIR" "$RESOURCES_DIR"
 
-# Compile Swift files
-echo "Compiling..."
-swiftc \
-    -o "$MACOS_DIR/$APP_NAME" \
-    -target arm64-apple-macosx13.0 \
-    -sdk $(xcrun --show-sdk-path) \
-    -framework AppKit \
-    -framework AVFoundation \
-    -framework AVKit \
-    -framework SwiftUI \
-    PublicRadioPlayer/*.swift
+# Compile Swift files (universal: Apple Silicon + Intel)
+SDK_PATH=$(xcrun --show-sdk-path)
+ARCHS=(arm64 x86_64)
+SLICES=()
+for arch in "${ARCHS[@]}"; do
+    echo "Compiling ($arch)..."
+    swiftc \
+        -o "$MACOS_DIR/$APP_NAME-$arch" \
+        -target "$arch-apple-macosx13.0" \
+        -sdk "$SDK_PATH" \
+        -framework AppKit \
+        -framework AVFoundation \
+        -framework AVKit \
+        -framework SwiftUI \
+        PublicRadioPlayer/*.swift
+    SLICES+=("$MACOS_DIR/$APP_NAME-$arch")
+done
+
+# Combine slices into a single universal binary
+lipo -create -output "$MACOS_DIR/$APP_NAME" "${SLICES[@]}"
+rm -f "${SLICES[@]}"
 
 # Create Info.plist
 cat > "$CONTENTS_DIR/Info.plist" << 'EOF'
@@ -52,6 +62,11 @@ cat > "$CONTENTS_DIR/Info.plist" << 'EOF'
 </dict>
 </plist>
 EOF
+
+# Ad-hoc sign so the app runs on Apple Silicon. This is NOT notarization — a
+# downloaded copy is still quarantined by Gatekeeper (see README install notes).
+echo "Ad-hoc signing..."
+codesign --force --deep --sign - "$APP_BUNDLE"
 
 echo "Build complete: $APP_BUNDLE"
 echo ""
