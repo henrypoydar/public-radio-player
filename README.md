@@ -2,6 +2,8 @@
 
 A minimal macOS menu bar app for streaming public radio to AirPlay speakers, isolated from your main audio output.
 
+|<img width="222" height="516" alt="preview" src="https://github.com/user-attachments/assets/c62d0d9e-c3e5-4736-a979-cec5d7a16b24" />|<img width="346" height="246" alt="preview-output" src="https://github.com/user-attachments/assets/7bd3b8aa-ace8-40e8-9e93-677b29ac93f3" />|
+
 Please consider supporting these stations:
 - **KCRW** - Music discovery, NPR and local news, culture coverage, and community events: https://join.kcrw.com/
 - **WNYC** - Award-winning journalism, groundbreaking podcasts, and essential New York conversation: https://pledge.wnyc.org/
@@ -16,9 +18,6 @@ Please consider supporting these stations:
 - **Native AirPlay picker** - Route audio to any AirPlay speaker
 - **Isolated audio** - Plays on selected AirPlay device while other apps use your default output
 - **CLI control** - Drive the player from the terminal with `prp` (list, status, play, pause, switch)
-
-
-|<img width="222" height="516" alt="preview" src="https://github.com/user-attachments/assets/c62d0d9e-c3e5-4736-a979-cec5d7a16b24" />|<img width="346" height="246" alt="preview-output" src="https://github.com/user-attachments/assets/7bd3b8aa-ace8-40e8-9e93-677b29ac93f3" />|
 
 ## Requirements
 
